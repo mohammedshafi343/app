@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+
+void main() => runApp(ExpenseTrackerApp());
+
+class ExpenseTrackerApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ExpenseTracker(),
+    );
+  }
+}
+
+class ExpenseTracker extends StatefulWidget {
+  @override
+  _ExpenseTrackerState createState() => _ExpenseTrackerState();
+}
+
+class _ExpenseTrackerState extends State<ExpenseTracker> {
+  final List<Map<String, dynamic>> _transactions = [];
+  final TextEditingController _controller = TextEditingController();
+
+  void _addTransaction() {
+    final amount = double.parse(_controller.text);
+    setState(() {
+      _transactions.add({'amount': amount, 'date': DateTime.now()});
+      _controller.clear();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Expense Tracker')),
+      body: Column(
+        children: [
+          TextField(controller: _controller, keyboardType: TextInputType.number),
+          ElevatedButton(onPressed: _addTransaction, child: Text('Add Transaction')),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _transactions.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('\$${_transactions[index]['amount']}'),
+                  subtitle: Text('${_transactions[index]['date']}'),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
